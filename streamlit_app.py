@@ -76,7 +76,7 @@ st.text_input("", placeholder="검색어를 입력하세요...", key="search")
 # 6) 더미 메뉴
 menus = [
     {"name":"라지 크림 새우","price":12000,"stand":"D05","time":20},
-    {"name":"불고기 핫도그","price":6000, "stand":"D08","time":5},
+    {"name":"불고기 핫ㅇ","price":6000, "stand":"D08","time":5},
     {"name":"치즈버킷","price":15000,"stand":"D07","time":60},
 ]
 for m in menus:
