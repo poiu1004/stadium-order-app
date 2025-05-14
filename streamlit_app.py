@@ -12,52 +12,42 @@ st.set_page_config(
 # 2) CSS 주입 (반드시 가장 위에!)
 st.markdown("""
 <style>
-/* html, body 전체 스크롤 차단 */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden !important;
-}
-/* Streamlit main 컨테이너 고정 */
-main {
-  position: absolute !important;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden !important;
-}
-/* 1) 헤더/푸터 고정 */
-.header, .footer {
+/* 1) 헤더 고정 */
+.header {
   position: fixed;
+  top: 0;
   left: 0;
   right: 0;
   height: 60px;
   background-color: #FE4949;
   z-index: 1000;
 }
-.header { top: 0; }
-.footer { bottom: 0; }
-/* 2) 콘텐츠 영역 (헤더·푸터 사이) */
-.content {
-  position: absolute;
-  top: 60px;
-  bottom: 60px;
+/* 2) 푸터 고정 */
+.footer {
+  position: fixed;
+  bottom: 0;
   left: 0;
   right: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  height: 60px;
+  background-color: #FE4949;
+  z-index: 1000;
 }
-/* 3) 지도 영역: 남은 공간 모두 차지 */
+/* 3) 맵 영역: 헤더 아래, 리스트 위에 고정 */
 .map-container {
-  flex: 1;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 360px; /* 리스트 높이만큼 위쪽에 고정 */
   overflow: hidden;
 }
-/* 4) 리스트 영역: 고정 높이, 내부에서만 스크롤 */
+/* 4) 리스트 영역: 푸터 위, 고정 높이, 내부 스크롤 */
 .list-container {
-  height: 360px; /* 음식 3개 보여줄 높이 */
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 60px;
+  height: 360px;
   overflow-y: auto;
   padding: 0 1rem;
   box-sizing: border-box;
@@ -95,15 +85,12 @@ main {
 # 고정 헤더
 st.markdown('<div class="header"></div>', unsafe_allow_html=True)
 
-# 콘텐츠 영역 시작
-st.markdown('<div class="content">', unsafe_allow_html=True)
-
-# 3-1) 지도 (위쪽)
+# 맵 영역 (헤더 아래)
 st.markdown('<div class="map-container">', unsafe_allow_html=True)
 st.image("https://via.placeholder.com/800x400?text=Map+Here", use_container_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 3-2) 검색 + 리스트 (아래쪽, 360px 고정)
+# 리스트 영역 (푸터 위)
 st.markdown('<div class="list-container">', unsafe_allow_html=True)
 query = st.text_input("🔍 음식 또는 가게 검색", placeholder="예) 치킨, 피자")
 
@@ -129,8 +116,7 @@ for r in restaurants:
       </div>
     ''', unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)  # .list-container닫기
-st.markdown('</div>', unsafe_allow_html=True)  # .content닫기
+st.markdown('</div>', unsafe_allow_html=True)
 
 # 고정 푸터
 st.markdown('<div class="footer"></div>', unsafe_allow_html=True)
