@@ -1,11 +1,11 @@
-import streamlit as st
-
 st.markdown("""
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#FE4949">
 """, unsafe_allow_html=True)
+
+import streamlit as st
 
 # 1) 무조건 최상단에 한 번만!
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
