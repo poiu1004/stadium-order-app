@@ -12,61 +12,76 @@ st.set_page_config(
 # 2) CSS 주입 (반드시 가장 위에!)
 st.markdown("""
 <style>
-/* 1) Streamlit 전체 앱(main) 고정: 페이지 스크롤 완전 차단 */
-main {
-  position: fixed !important;
-  top: 0; left: 0; right: 0; bottom: 0;
+/* html, body 전체 스크롤 차단 */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   overflow: hidden !important;
 }
-
-/* 2) 헤더/푸터 고정 */
+/* Streamlit main 컨테이너 고정 */
+main {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden !important;
+}
+/* 1) 헤더/푸터 고정 */
 .header, .footer {
-  position: fixed; left: 0; right: 0; height: 60px;
-  background-color: #FE4949; z-index: 1000;
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #FE4949;
+  z-index: 1000;
 }
 .header { top: 0; }
 .footer { bottom: 0; }
-
-/* 3) 콘텐츠 영역 (헤더·푸터 사이) */
+/* 2) 콘텐츠 영역 (헤더·푸터 사이) */
 .content {
-  position: absolute; top: 60px; bottom: 60px; width: 100%;
-  display: flex; flex-direction: column;
-  overflow: hidden;    /* 자식 컨테이너 외에는 스크롤 금지 */
-}
-
-/* 4) 지도 영역: 고정 높이(전체 높이 – 리스트 높이) */
-.map-container {
-  flex: none;
-  height: calc(100% - 360px);
+  position: absolute;
+  top: 60px;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
-
-/* 5) 리스트 영역: 고정 360px, 이 안에서만 스크롤 */
+/* 3) 지도 영역: 남은 공간 모두 차지 */
+.map-container {
+  flex: 1;
+  overflow: hidden;
+}
+/* 4) 리스트 영역: 고정 높이, 내부에서만 스크롤 */
 .list-container {
-  flex: none;
-  height: 360px;
+  height: 360px; /* 음식 3개 보여줄 높이 */
   overflow-y: auto;
   padding: 0 1rem;
   box-sizing: border-box;
 }
-
-/* 6) 카드 스타일 (딱 3개 보이도록 높이 120px) */
+/* 5) 카드 스타일 */
 .list-item {
-  display: flex; align-items: center;
-  height: 120px;          /* 360px ÷ 3 = 120px */
+  display: flex;
+  align-items: center;
+  height: 120px; /* 360px ÷ 3 */
   margin-bottom: 8px;
   padding: 8px;
   border: 1px solid #eee;
   border-radius: 8px;
-  font-size: 0.9rem;      /* 살짝 작게 */
+  font-size: 0.9rem;
 }
 .list-item img {
-  width: 72px; height: 72px;
+  width: 72px;
+  height: 72px;
   border-radius: 8px;
   margin-right: 12px;
 }
 .list-item .info {
-  display: flex; flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 .list-item .name { font-weight: bold; margin-bottom: 4px; }
 .list-item .desc { color: #666; margin-bottom: 4px; }
