@@ -1,111 +1,79 @@
+# app.py 또는 pages/1_Home.py
 import streamlit as st
 
-# 1) 무조건 최상단에 한 번만!
-st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
+# 1) 페이지 설정
+st.set_page_config(
+    page_title="배달앱 메인",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
-# 2) 메타태그 + CSS (헤더/푸터, 모바일 풀스크린, flex)
+# 2) 전역 CSS (Header/Footer, 스크롤 영역)
 st.markdown("""
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  /* 전체 화면 flex 배치 */
-  html, body, .block-container {
-    width:100vw!important; height:100vh!important;
-    margin:0; padding:0; overflow:hidden;
-    display:flex!important; flex-direction:column!important;
-  }
-  /* 헤더 높이 만큼 메인 위쪽 여백 */
-  div[role="main"] {
-    flex:1 1 auto!important;
-    padding-top:60px!important;    /* 헤더 높이 */
-    padding-bottom:60px!important; /* 푸터 높이 */
-    overflow-y:auto!important;
-  }
-  /* 헤더 스타일 */
-  .app-header {
-    position:fixed; top:0; left:0;
-    width:100%; height:60px;
-    background:#FE4949;
-    display:flex; align-items:center;
-    padding:0 16px; box-sizing:border-box;
-    z-index:1000;
-  }
-  .app-header select {
-    flex:1;
-    padding:8px 12px;
-    border:none; border-radius:8px;
-    font-size:16px;
-  }
-  .app-header img {
-    width:32px; height:32px;
-    margin-left:12px;
-  }
-  /* 푸터 스타일 */
-  .app-footer {
-    position:fixed; bottom:0; left:0;
-    width:100%; height:60px;
-    background:#FE4949;
-    display:flex; align-items:center; justify-content:space-around;
-    padding:0 16px; box-sizing:border-box;
-    z-index:1000;
-  }
-  .app-footer .nav-btn {
-    width:40px; height:40px;
-    background:white; border-radius:8px;
-  }
+/* 상단·하단 바 */
+.header, .footer {
+  background-color: #FE4949;
+  width: 100%;
+  height: 60px;
+}
+/* 콘텐츠 전체 높이 = 뷰포트 높이 – (헤더+푸터 높이) */
+.content {
+  height: calc(100vh - 120px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+/* 지도 영역: 전체 콘텐츠 높이의 50% */
+.map-container {
+  flex: 1;
+  overflow: hidden;
+}
+/* 리스트 영역: 나머지 50% + 세로 스크롤 */
+.list-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 1rem;
+}
 </style>
-
-<!-- 3) 헤더 마크업 -->
-<div class="app-header">
-  <select>
-    <option>잠실 야구장</option>
-    <option>SSG 야구장</option>
-    <option>고척돔</option>
-  </select>
-  <img src="https://via.placeholder.com/32" alt="logo">
-</div>
+<div class="header"></div>
 """, unsafe_allow_html=True)
 
-# --- 이 아래가 div[role="main"] 영역 ---
+# 3) 본문 영역
+st.markdown('<div class="content">', unsafe_allow_html=True)
 
-# 4) 맵 플레이스홀더
-st.image("https://via.placeholder.com/350x180?text=Map+Placeholder", use_column_width=True)
+# 3-1) 지도 (위쪽 절반)
+with st.container():
+    st.markdown('<div class="map-container">', unsafe_allow_html=True)
+    # 실제 서비스: 구글맵·카카오맵 iframe 또는 Static map 이미지
+    st.image("https://via.placeholder.com/800x400?text=Map+Here", use_column_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# 5) 검색창
-st.text_input("", placeholder="검색어를 입력하세요...", key="search")
-
-# 6) 더미 메뉴
-menus = [
-    {"name":"라지 크림 새우","price":12000,"stand":"D05","time":20},
-    {"name":"불고기 핫ㅇ","price":6000, "stand":"D08","time":5},
-    {"name":"치즈버킷","price":15000,"stand":"D07","time":60},
-]
-for m in menus:
-    color = "#8BC34A" if m["time"]<=10 else "#FFEB3B" if m["time"]<=30 else "#F44336"
-    with st.container():
-        c1, c2, c3 = st.columns([1,4,2])
-        c1.image("https://via.placeholder.com/60", width=60)
-        c2.markdown(f"**{m['name']}** ({m['price']:,}원)\n1층 - {m['stand']}")
-        c3.markdown(f"""
-<div style="
-  background:#F0F0F0; border-radius:8px;
-  padding:4px 8px; text-align:center;
-">
-  {m['time']}분 
-  <span style="
-    display:inline-block; width:12px; height:12px;
-    background:{color}; border-radius:50%; margin-left:4px;
-  "></span>
-</div>
-""", unsafe_allow_html=True)
+# 3-2) 검색 + 리스트 (아래쪽 절반, 스크롤)
+with st.container():
+    st.markdown('<div class="list-container">', unsafe_allow_html=True)
+    # 검색창
+    query = st.text_input("🔍 음식 또는 가게 검색", placeholder="예) 치킨, 피자")
+    # 예시 데이터
+    restaurants = [
+        {"name": "치킨 나라", "desc": "바삭한 후라이드 치킨", "fee": 2500},
+        {"name": "피자 팩토리", "desc": "치즈 듬뿍 피자",   "fee": 3000},
+        # … 더 많은 항목 …
+    ]
+    # 리스트 렌더링
+    for r in restaurants:
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            st.image("https://via.placeholder.com/80", width=80)
+        with col2:
+            st.subheader(r["name"])
+            st.write(r["desc"])
+            st.caption(f"배달비: ₩{r['fee']:,}")
         st.markdown("---")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# 7) 푸터 마크업
-st.markdown("""
-<div class="app-footer">
-  <div class="nav-btn"></div>
-  <div class="nav-btn"></div>
-  <div class="nav-btn" style="width:56px;height:56px;margin-top:-8px;border-radius:28px;"></div>
-  <div class="nav-btn"></div>
-  <div class="nav-btn"></div>
-</div>
-""", unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# 4) Footer
+st.markdown('<div class="footer"></div>', unsafe_allow_html=True)
+
